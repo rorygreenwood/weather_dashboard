@@ -1,11 +1,13 @@
 import datetime
+import os
 
 import requests
 
-# todo - turn this into an environment variable
-api_key = 'b724a30772a8534ee90ad41aabaf3ed2'
+from dotenv import load_dotenv
 
-zipcode = 'L21' # Only first part is required
+load_dotenv()
+api_key = os.getenv('API_KEY')
+zipcode = 'L1' # Only first part is required
 country_code = 'GB'
 
 def calculate_direction(degrees: int) -> str:
@@ -64,7 +66,6 @@ def get_weather(lat: float, lon: float) -> dict:
     """Call weather API and receive response"""
     base_url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric'
     r = requests.get(base_url)
-    # todo better handle of responses.
     response = r.json()
     return response
 
@@ -89,8 +90,16 @@ def parse_weather(weather_data: dict) -> WeatherData:
 
     if sunrise:
         sunrise_dt = datetime.datetime.fromtimestamp(int(sunrise))
+        sunrise_t = sunrise_dt.time().strftime('%H:%M') # For sunrise/sunset clocks
+
     if sunset:
         sunset_dt = datetime.datetime.fromtimestamp(int(sunset))
+        sunset_t = sunset_dt.time().strftime('%H:%M')
+    else:
+        sunrise_dt = None
+        sunset_dt = None
+        sunrise_t = None
+        sunset_t = None
 
     # Take sunrise & sunset data
     current_ts = datetime.datetime.now()
@@ -103,8 +112,8 @@ def parse_weather(weather_data: dict) -> WeatherData:
 
     w = WeatherData(context={
         'humidity': _safe_extract(main_data, 'humidity'),
-        'sunrise': sunrise_dt,
-        'sunset': sunset_dt,
+        'sunrise': sunrise_t,
+        'sunset': sunset_t,
         'is_day': is_day,
         'temp_min': _safe_extract(main_data, 'temp_min'),
         'temp_max': _safe_extract(main_data, 'temp_max'),

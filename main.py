@@ -59,7 +59,7 @@ def lookup_icon(weatherdata: WeatherData) -> str:
     elif weatherdata.weather_id in HEAVY_CLOUDS:
         folder = 'cloud'
         weather_icon = 'overcast.png'
-    filepath = f'light_icons/{folder}/{weather_icon}'
+    filepath = f'icons/{folder}/{weather_icon}'
     return filepath
 
 class WeatherApp:
@@ -110,7 +110,7 @@ class WeatherApp:
         self.grid_container.pack(pady=20)
 
         # Humidity
-        humidity_img = Image.open('light_icons/metric/humidity.png').resize((60, 60), Image.Resampling.LANCZOS)
+        humidity_img = Image.open('icons/metric/humidity.png').resize((60, 60), Image.Resampling.LANCZOS)
         self.humidity_icon = ImageTk.PhotoImage(humidity_img)
         self.humidity_icon_label = tk.Label(self.grid_container, bg='#1a1a1a', image=self.humidity_icon)
         self.humidity_icon_label.grid(row=0, column=1, padx=20, pady=20)
@@ -118,11 +118,8 @@ class WeatherApp:
         self.humidity_label = tk.Label(self.grid_container, text=str(self.weatherdata.humidity) + '%', fg='#888888',bg='#1a1a1a', font=self.info_font)
         self.humidity_label.grid(row=1, column=1)
 
-        # todo - Ditto for below items as well
-
-
         # Windspeed
-        wind_img = Image.open('light_icons/metric/wind-direction.png').resize((60, 60), Image.Resampling.LANCZOS)
+        wind_img = Image.open('icons/metric/wind-direction.png').resize((60, 60), Image.Resampling.LANCZOS)
         self.wind_icon = ImageTk.PhotoImage(wind_img)
         self.wind_icon_label = tk.Label(self.grid_container, bg='#1a1a1a', image=self.wind_icon)
         self.wind_icon_label.grid(row=0, column=2, pady=20, padx=20)
@@ -131,16 +128,20 @@ class WeatherApp:
         self.windspeed_label.grid(row=1, column=2)
 
         # Sunrise
-        sunrise_img = Image.open('light_icons/metric/sunrise.png').resize((60, 60), Image.Resampling.LANCZOS)
+        sunrise_img = Image.open('icons/metric/sunrise.png').resize((60, 60), Image.Resampling.LANCZOS)
         self.sunrise_icon = ImageTk.PhotoImage(sunrise_img)
         self.sunrise_icon_label = tk.Label(self.grid_container, bg='#1a1a1a', image=self.sunrise_icon)
         self.sunrise_icon_label.grid(row=0, column=3, pady=20, padx=20)
+        self.sunrise_label = tk.Label(self.grid_container, text=str(self.weatherdata.sunrise), fg='#888888', bg='#1a1a1a', font=self.info_font)
+        self.sunrise_label.grid(row=1, column=3)
 
         # Sunset
-        sunset_img = Image.open('light_icons/metric/sunset.png').resize((60, 60), Image.Resampling.LANCZOS)
+        sunset_img = Image.open('icons/metric/sunset.png').resize((60, 60), Image.Resampling.LANCZOS)
         self.sunset_icon = ImageTk.PhotoImage(sunset_img)
         self.sunset_icon_label = tk.Label(self.grid_container, bg='#1a1a1a', image=self.sunset_icon)
         self.sunset_icon_label.grid(row=0, column=4, pady=20, padx=20)
+        self.sunset_label = tk.Label(self.grid_container, text=str(self.weatherdata.sunset), fg='#888888', bg='#1a1a1a', font=self.info_font)
+        self.sunset_label.grid(row=1, column=4)
 
 
     def set_weather_icon(self, icon_name):
