@@ -43,11 +43,20 @@ class WeatherData:
         self.wind_direction = calculate_direction(self.wind_degrees)
 
     def __repr__(self):
-        return f'It is {self.temp}C! There is a {self.wind_speed}mph {self.wind_directon} wind'
+        return f'It is {self.temp}C! There is a {self.wind_speed}mph {self.wind_direction} wind'
 
 
 def _safe_extract(target_dict: dict | None, key):
     return target_dict.get(key) if target_dict else None
+
+
+def _api_call(url: str):
+    """Call weather API and receive response as JSON"""
+    r = requests.get(url)
+    if r.status_code != 200:
+        raise ValueError(f'status code {r.status_code} != 200 for url {url}')
+    response = r.json()
+    return response
 
 
 def get_coords(zipcode: str, country_code: str) -> dict:
@@ -57,16 +66,14 @@ def get_coords(zipcode: str, country_code: str) -> dict:
     Returns keys zip, name, lat, lon, country.
     """
     base_url = f'http://api.openweathermap.org/geo/1.0/zip?zip={zipcode},{country_code}&appid={api_key}'
-    r = requests.get(base_url)
-    response = r.json()
+    response = _api_call(base_url)
     return response
 
 
 def get_weather(lat: float, lon: float) -> dict:
     """Call weather API and receive response"""
     base_url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric'
-    r = requests.get(base_url)
-    response = r.json()
+    response = _api_call(base_url)
     return response
 
 
@@ -130,7 +137,7 @@ def parse_weather(weather_data: dict) -> WeatherData:
     return w
 
 
-def request_weather() -> WeatherData:
+def request_weather(zipcode: str, country_code: str) -> WeatherData:
     geo_data = get_coords(zipcode=zipcode, country_code=country_code)
     lat = geo_data.get('lat')
     lon = geo_data.get('lon')
@@ -139,7 +146,3 @@ def request_weather() -> WeatherData:
 
     output = parse_weather(weather_data)
     return output
-
-if __name__ == '__main__':
-    data = request_weather()
-    print(data)
