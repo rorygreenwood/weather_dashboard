@@ -231,7 +231,7 @@ class WeatherApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    # root.attributes('-fullscreen', True) # Uncomment for the Pi
+    root.attributes('-fullscreen', True) # Uncomment for the Pi
     app = WeatherApp(root)
     app.refresh() # Provides initial info at startup.
     root.mainloop()
